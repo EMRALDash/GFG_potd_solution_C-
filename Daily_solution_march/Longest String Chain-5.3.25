@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int longestStringChain(vector<string>& words) { // Function name changed to match main()
+        // Step 1: Sort words based on length
+        sort(words.begin(), words.end(), [](const string& a, const string& b) {
+            return a.size() < b.size();
+        });
+
+        unordered_map<string, int> dp; // Stores longest chain ending at each word
+        int maxLength = 1;
+
+        for (const auto& word : words) {
+            int bestChain = 1;
+
+            // Step 2: Try removing one character at a time
+            for (int i = 0; i < word.size(); i++) {
+                string pred = word.substr(0, i) + word.substr(i + 1); // Remove character at index i
+                
+                auto it = dp.find(pred);
+                if (it != dp.end()) {
+                    bestChain = max(bestChain, it->second + 1);
+                }
+            }
+
+            dp[word] = bestChain; // Store longest chain for the word
+            maxLength = max(maxLength, bestChain);
+        }
+
+        return maxLength;
+    }
+};
