@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    // Function to expand around center and return the longest palindromic substring
+    pair<int, int> expandAroundCenter(string &s, int left, int right) {
+        while (left >= 0 && right < s.length() && s[left] == s[right]) {
+            left--;
+            right++;
+        }
+        return {left + 1, right - 1};  // Return valid palindrome boundaries
+    }
+
+    string longestPalindrome(string &s) {
+        if (s.empty()) return "";
+
+        int start = 0, end = 0;
+        
+        for (int i = 0; i < s.length(); i++) {
+            // Odd-length palindrome (single character center)
+            pair<int, int> p1 = expandAroundCenter(s, i, i);
+            // Even-length palindrome (two-character center)
+            pair<int, int> p2 = expandAroundCenter(s, i, i + 1);
+
+            // Update the longest palindrome
+            if (p1.second - p1.first > end - start) {
+                start = p1.first;
+                end = p1.second;
+            }
+            if (p2.second - p2.first > end - start) {
+                start = p2.first;
+                end = p2.second;
+            }
+        }
+
+        return s.substr(start, end - start + 1);
+    }
+};
