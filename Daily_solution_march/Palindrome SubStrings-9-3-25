@@ -1,0 +1,26 @@
+class Solution {
+  public:
+    // Function to expand around center and count palindromic substrings
+    int expandAroundCenter(string &s, int left, int right) {
+        int count = 0;
+        while (left >= 0 && right < s.length() && s[left] == s[right]) {
+            if (right - left + 1 >= 2) count++;  // Only count if length ≥ 2
+            left--;
+            right++;
+        }
+        return count;
+    }
+
+    int countPS(string &s) {
+        int totalCount = 0;
+        
+        for (int i = 0; i < s.length(); i++) {
+            // Odd-length palindromes (single character center)
+            totalCount += expandAroundCenter(s, i, i);
+            // Even-length palindromes (two-character center)
+            totalCount += expandAroundCenter(s, i, i + 1);
+        }
+
+        return totalCount;
+    }
+};
