@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        int n = arr.size();
+        sort(arr.begin(), arr.end());  // Sort arrival times
+        sort(dep.begin(), dep.end());  // Sort departure times
+
+        int i = 0, j = 0;  // Two pointers for arrival and departure
+        int platforms = 0, maxPlatforms = 0;
+
+        while (i < n && j < n) {
+            if (arr[i] <= dep[j]) {  
+                platforms++;  // Train arrives, need a new platform
+                maxPlatforms = max(maxPlatforms, platforms);
+                i++;  // Move to the next arrival
+            } else {  
+                platforms--;  // Train departs, free a platform
+                j++;  // Move to the next departure
+            }
+        }
+
+        return maxPlatforms;
+    }
+};
