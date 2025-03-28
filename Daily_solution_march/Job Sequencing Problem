@@ -1,0 +1,51 @@
+class Solution {
+  public:
+    // Find the latest available slot using path compression
+    int findParent(int slot, vector<int> &parent) {
+        if (parent[slot] == slot) return slot;
+        return parent[slot] = findParent(parent[slot], parent); // Path compression
+    }
+
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        int n = deadline.size();
+        vector<pair<int, int>> jobs;
+
+        // Store jobs as {profit, deadline} and sort by profit (descending)
+        for (int i = 0; i < n; i++) {
+            jobs.push_back({profit[i], deadline[i]});
+        }
+        sort(jobs.rbegin(), jobs.rend()); // Sort jobs by profit (high to low)
+
+        // Find the maximum deadline to create parent array
+        int maxDeadline = 0;
+        for (int i = 0; i < n; i++) {
+            maxDeadline = max(maxDeadline, jobs[i].second);
+        }
+
+        // Disjoint set to track available slots
+        vector<int> parent(maxDeadline + 1);
+        for (int i = 0; i <= maxDeadline; i++) {
+            parent[i] = i; // Initialize each slot to point to itself
+        }
+
+        int jobCount = 0, maxProfit = 0;
+
+        // Process jobs in descending order of profit
+        for (int i = 0; i < n; i++) {
+            int deadline = jobs[i].second;
+            int jobProfit = jobs[i].first;
+
+            // Find the latest available slot using Disjoint Set
+            int availableSlot = findParent(deadline, parent);
+
+            // If an available slot exists
+            if (availableSlot > 0) {
+                parent[availableSlot] = findParent(availableSlot - 1, parent); // Merge sets
+                jobCount++;
+                maxProfit += jobProfit;
+            }
+        }
+
+        return {jobCount, maxProfit};
+    }
+};
