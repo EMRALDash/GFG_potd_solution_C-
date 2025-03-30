@@ -1,0 +1,23 @@
+
+
+class Solution {
+public:
+    int startStation(vector<int> &gas, vector<int> &cost) {
+        int n = gas.size();
+        int total_gas = 0, current_gas = 0, start_index = 0;
+
+        for (int i = 0; i < n; i++) {
+            total_gas += gas[i] - cost[i];  // Track overall gas balance
+            current_gas += gas[i] - cost[i]; // Track current segment balance
+            
+            // If at any point current_gas < 0, reset the start index
+            if (current_gas < 0) {
+                start_index = i + 1;  // Try starting from next station
+                current_gas = 0;      // Reset local gas tracking
+            }
+        }
+        
+        // If total gas is negative, no valid start exists
+        return (total_gas >= 0) ? start_index : -1;
+    }
+};
