@@ -1,0 +1,52 @@
+class Solution {
+  public:
+    int orangesRotting(vector<vector<int>>& mat) {
+        int n = mat.size(), m = mat[0].size();
+        queue<pair<int, int>> q;  // Store {row, col} of rotten oranges
+        int freshCount = 0;       // Count of fresh oranges
+        int time = 0;
+        
+        // Step 1: Add all initially rotten oranges to the queue and count fresh oranges
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (mat[i][j] == 2) {
+                    q.push({i, j});
+                } else if (mat[i][j] == 1) {
+                    freshCount++;
+                }
+            }
+        }
+        
+        // Directions for 4 adjacent cells (up, down, left, right)
+        int dx[] = {-1, 1, 0, 0};
+        int dy[] = {0, 0, -1, 1};
+        
+        // Step 2: BFS Traversal
+        while (!q.empty() && freshCount > 0) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                pair<int, int> cell = q.front();
+                q.pop();
+                int x = cell.first;
+                int y = cell.second;
+
+                // Check all 4 possible directions
+                for (int d = 0; d < 4; d++) {
+                    int newX = x + dx[d];
+                    int newY = y + dy[d];
+                    
+                    // If the new position is valid and contains a fresh orange
+                    if (newX >= 0 && newX < n && newY >= 0 && newY < m && mat[newX][newY] == 1) {
+                        mat[newX][newY] = 2; // Mark orange as rotten
+                        q.push({newX, newY});
+                        freshCount--;  // Reduce fresh orange count
+                    }
+                }
+            }
+            time++;  // Increase time after each level of BFS
+        }
+        
+        // If any fresh orange is left, return -1
+        return freshCount == 0 ? time : -1;
+    }
+};
