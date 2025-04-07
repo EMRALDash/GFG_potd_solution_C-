@@ -1,0 +1,44 @@
+class Solution {
+  public:
+    bool dfs(int node, vector<bool>& visited, vector<bool>& recStack, vector<int> adj[]) {
+        visited[node] = true;
+        recStack[node] = true;
+
+        for (int neighbor : adj[node]) {
+            if (!visited[neighbor]) {
+                if (dfs(neighbor, visited, recStack, adj)) {
+                    return true;
+                }
+            } else if (recStack[neighbor]) {
+                // Found a cycle
+                return true;
+            }
+        }
+
+        recStack[node] = false; // Backtrack
+        return false;
+    }
+
+    bool isCyclic(int V, vector<vector<int>>& edges) {
+        vector<int> adj[V];
+
+        // Build adjacency list
+        for (auto &edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+        }
+
+        vector<bool> visited(V, false);
+        vector<bool> recStack(V, false);  // recursion stack
+
+        // Check for cycle in each component
+        for (int i = 0; i < V; ++i) {
+            if (!visited[i]) {
+                if (dfs(i, visited, recStack, adj)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+};
