@@ -1,0 +1,57 @@
+class Solution {
+  public:
+    void dfs(int u, int parent, vector<int> adj[], vector<bool>& visited,
+             vector<int>& disc, vector<int>& low, vector<bool>& isArticulation, int& timer) {
+        
+        visited[u] = true;
+        disc[u] = low[u] = timer++;
+        int children = 0;
+
+        for (int v : adj[u]) {
+            if (v == parent) continue;
+
+            if (!visited[v]) {
+                children++;
+                dfs(v, u, adj, visited, disc, low, isArticulation, timer);
+                low[u] = min(low[u], low[v]);
+
+                // Condition for articulation point
+                if (parent != -1 && low[v] >= disc[u]) {
+                    isArticulation[u] = true;
+                }
+            } else {
+                low[u] = min(low[u], disc[v]);
+            }
+        }
+
+        // Special case for root node
+        if (parent == -1 && children > 1) {
+            isArticulation[u] = true;
+        }
+    }
+
+    vector<int> articulationPoints(int V, vector<vector<int>>& edges) {
+        vector<int> adj[V];
+        for (auto& edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+
+        vector<bool> visited(V, false), isArticulation(V, false);
+        vector<int> disc(V, -1), low(V, -1);
+        int timer = 0;
+
+        for (int i = 0; i < V; ++i) {
+            if (!visited[i]) {
+                dfs(i, -1, adj, visited, disc, low, isArticulation, timer);
+            }
+        }
+
+        vector<int> result;
+        for (int i = 0; i < V; ++i) {
+            if (isArticulation[i]) result.push_back(i);
+        }
+
+        return result.empty() ? vector<int>{-1} : result;
+    }
+};
