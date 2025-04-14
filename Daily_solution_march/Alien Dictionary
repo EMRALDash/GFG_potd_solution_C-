@@ -1,0 +1,59 @@
+class Solution {
+  public:
+    string findOrder(vector<string> &words) {
+        unordered_map<char, vector<char>> adj;
+        unordered_map<char, int> indegree;
+        
+        // Initialize indegree for all unique characters
+        for (string &word : words) {
+            for (char c : word) {
+                indegree[c] = 0;
+            }
+        }
+        
+        // Build the graph
+        for (int i = 0; i < words.size() - 1; ++i) {
+            string w1 = words[i];
+            string w2 = words[i + 1];
+            int len = min(w1.length(), w2.length());
+            bool found = false;
+            for (int j = 0; j < len; ++j) {
+                if (w1[j] != w2[j]) {
+                    adj[w1[j]].push_back(w2[j]);
+                    indegree[w2[j]]++;
+                    found = true;
+                    break;
+                }
+            }
+            // Handle case like: ["abc", "ab"] which is invalid
+            if (!found && w1.length() > w2.length()) {
+                return "";
+            }
+        }
+        
+        // Kahn's Algorithm for Topological Sort
+        queue<char> q;
+        for (auto &pair : indegree) {
+            if (pair.second == 0)
+                q.push(pair.first);
+        }
+
+        string order;
+        while (!q.empty()) {
+            char curr = q.front();
+            q.pop();
+            order += curr;
+            for (char neighbor : adj[curr]) {
+                indegree[neighbor]--;
+                if (indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+
+        // If all characters are not in order, there's a cycle
+        if (order.size() != indegree.size())
+            return "";
+
+        return order;
+    }
+};
