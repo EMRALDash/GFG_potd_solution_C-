@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    vector<int> nthRowOfPascalTriangle(int n) {
+        const int MOD = 1e9 + 7;
+        vector<int> row;
+        row.push_back(1); // First element is always 1
+
+        for (int i = 1; i < n; i++) {
+            // Compute current element using previous
+            long long prev = row.back();
+            long long next = (prev * (n - i)) % MOD;
+            next = (next * powMod(i, MOD - 2, MOD)) % MOD;
+            row.push_back(next);
+        }
+
+        return row;
+    }
+
+    // Fast modular exponentiation (for modular inverse)
+    long long powMod(long long a, long long b, int mod) {
+        long long res = 1;
+        while (b > 0) {
+            if (b % 2 == 1) res = (res * a) % mod;
+            a = (a * a) % mod;
+            b /= 2;
+        }
+        return res;
+    }
+};
