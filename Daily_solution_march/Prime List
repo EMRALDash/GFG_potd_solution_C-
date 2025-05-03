@@ -1,0 +1,41 @@
+class Solution {
+public:
+    // Sieve of Eratosthenes to generate primes up to 20000
+    vector<bool> getPrimes(int maxVal) {
+        vector<bool> isPrime(maxVal + 1, true);
+        isPrime[0] = isPrime[1] = false;
+
+        for (int i = 2; i * i <= maxVal; ++i) {
+            if (isPrime[i]) {
+                for (int j = i * i; j <= maxVal; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+        return isPrime;
+    }
+
+    // Find the nearest prime to a given value
+    int nearestPrime(int val, const vector<bool>& isPrime) {
+        int left = val, right = val;
+        while (left >= 2 || right <= 20000) {
+            if (left >= 2 && isPrime[left]) return left;
+            if (right <= 20000 && isPrime[right]) return right;
+            --left;
+            ++right;
+        }
+        return 2; // default (though it should never be used)
+    }
+
+    Node* primeList(Node* head) {
+        vector<bool> isPrime = getPrimes(20000); // 2 * max possible value
+
+        Node* temp = head;
+        while (temp) {
+            temp->val = nearestPrime(temp->val, isPrime);
+            temp = temp->next;
+        }
+
+        return head;
+    }
+};
