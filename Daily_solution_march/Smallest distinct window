@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int findSubString(string& str) {
+        int n = str.length();
+        unordered_set<char> distinctChars(str.begin(), str.end());
+        int totalDistinct = distinctChars.size();
+
+        unordered_map<char, int> windowCount;
+        int minLen = n, count = 0;
+        int start = 0;
+
+        for (int end = 0; end < n; end++) {
+            windowCount[str[end]]++;
+
+            // Increase count if this is the first occurrence in window
+            if (windowCount[str[end]] == 1)
+                count++;
+
+            // When current window has all distinct characters
+            while (count == totalDistinct) {
+                minLen = min(minLen, end - start + 1);
+
+                // Shrink window from left
+                windowCount[str[start]]--;
+                if (windowCount[str[start]] == 0)
+                    count--;
+                start++;
+            }
+        }
+
+        return minLen;
+    }
+};
