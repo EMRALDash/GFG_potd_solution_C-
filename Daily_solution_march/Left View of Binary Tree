@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    vector<int> leftView(Node *root) {
+        vector<int> result;
+        if (root == nullptr) return result;
+
+        queue<Node*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            int levelSize = q.size();
+
+            for (int i = 0; i < levelSize; ++i) {
+                Node* current = q.front();
+                q.pop();
+
+                // If it's the first node of the level, add to result
+                if (i == 0) {
+                    result.push_back(current->data);
+                }
+
+                // Enqueue left child first for left view
+                if (current->left) {
+                    q.push(current->left);
+                }
+                if (current->right) {
+                    q.push(current->right);
+                }
+            }
+        }
+
+        return result;
+    }
+};
