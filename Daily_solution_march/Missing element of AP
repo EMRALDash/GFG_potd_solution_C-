@@ -1,0 +1,23 @@
+class Solution {
+  public:
+    int findMissing(vector<int> &arr) {
+        int n = arr.size();
+        int min_diff = INT_MAX;
+
+        // Step 1: Find the minimum difference between consecutive elements
+        for (int i = 1; i < n; i++) {
+            min_diff = min(min_diff, arr[i] - arr[i - 1]);
+        }
+
+        // Step 2: Find where the difference is not equal to min_diff
+        for (int i = 1; i < n; i++) {
+            if (arr[i] - arr[i - 1] != min_diff) {
+                // Missing element is between arr[i-1] and arr[i]
+                return arr[i - 1] + min_diff;
+            }
+        }
+
+        // Step 3: If no difference mismatch is found, AP is complete
+        return arr[n - 1] + min_diff;
+    }
+};
