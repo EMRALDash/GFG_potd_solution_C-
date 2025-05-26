@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    Node* sortedInsert(Node* head, int data) {
+        Node* newNode = new Node(data);
+
+        // Case 1: If list is empty
+        if (!head) {
+            newNode->next = newNode;
+            return newNode;
+        }
+
+        Node* curr = head;
+
+        // Case 2: Insert before head (new minimum) or after tail (new maximum)
+        while (true) {
+            Node* nextNode = curr->next;
+
+            // Condition 1: Insert between curr and nextNode in sorted order
+            if (curr->data <= data && data <= nextNode->data) {
+                break;
+            }
+
+            // Condition 2: Handle circular edge: largest to smallest point
+            if (curr->data > nextNode->data) {
+                if (data >= curr->data || data <= nextNode->data)
+                    break;
+            }
+
+            curr = nextNode;
+
+            // If we have come full circle, break and insert anywhere
+            if (curr == head)
+                break;
+        }
+
+        // Insert newNode between curr and curr->next
+        newNode->next = curr->next;
+        curr->next = newNode;
+
+        // If inserted data is smaller than head, return new head
+        if (data < head->data)
+            return newNode;
+
+        return head;
+    }
+};
