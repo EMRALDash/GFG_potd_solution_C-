@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    vector<int> leafNodes(vector<int>& preorder) {
+        vector<int> result;
+        int index = 0;
+        findLeaves(preorder, index, INT_MIN, INT_MAX, result);
+        return result;
+    }
+
+  private:
+    void findLeaves(vector<int>& preorder, int& index, int minVal, int maxVal, vector<int>& result) {
+        if (index >= preorder.size()) return;
+
+        int val = preorder[index];
+
+        // Value must lie within current bounds
+        if (val < minVal || val > maxVal) return;
+
+        index++;
+        int currIndex = index;
+
+        // Process left subtree
+        findLeaves(preorder, index, minVal, val - 1, result);
+
+        // Process right subtree
+        findLeaves(preorder, index, val + 1, maxVal, result);
+
+        // If both left and right subtree didn't consume any node, it's a leaf
+        if (index == currIndex) {
+            result.push_back(val);
+        }
+    }
+};
