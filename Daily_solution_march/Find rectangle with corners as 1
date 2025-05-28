@@ -1,0 +1,23 @@
+class Solution {
+  public:
+    bool ValidCorner(vector<vector<int>>& mat) {
+        int n = mat.size();
+        int m = mat[0].size();
+
+        // Check all pairs of columns
+        for (int c1 = 0; c1 < m; ++c1) {
+            for (int c2 = c1 + 1; c2 < m; ++c2) {
+                int count = 0;
+                for (int row = 0; row < n; ++row) {
+                    // If both columns have 1 in this row
+                    if (mat[row][c1] == 1 && mat[row][c2] == 1) {
+                        count++;
+                        // Found 2 rows with 1s in both columns
+                        if (count == 2) return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+};
