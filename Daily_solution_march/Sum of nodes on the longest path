@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int maxSum = 0;
+    int maxLen = 0;
+
+    void dfs(Node* node, int currSum, int currLen) {
+        if (node == NULL) return;
+
+        currSum += node->data;
+        currLen++;
+
+        // Leaf node
+        if (node->left == NULL && node->right == NULL) {
+            if (currLen > maxLen) {
+                maxLen = currLen;
+                maxSum = currSum;
+            } else if (currLen == maxLen) {
+                maxSum = max(maxSum, currSum);
+            }
+            return;
+        }
+
+        dfs(node->left, currSum, currLen);
+        dfs(node->right, currSum, currLen);
+    }
+
+    int sumOfLongRootToLeafPath(Node *root) {
+        maxSum = 0;
+        maxLen = 0;
+        dfs(root, 0, 0);
+        return maxSum;
+    }
+};
