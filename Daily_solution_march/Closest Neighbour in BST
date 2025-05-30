@@ -1,0 +1,20 @@
+class Solution {
+  public:
+    int findMaxFork(Node* root, int k) {
+        int ans = -1; // default if no value <= k is found
+
+        while (root != nullptr) {
+            if (root->data == k) {
+                return k; // exact match found
+            } 
+            else if (root->data < k) {
+                ans = root->data; // potential answer
+                root = root->right; // try to find a closer one
+            } 
+            else {
+                root = root->left; // this value is too big
+            }
+        }
+        return ans;
+    }
+};
