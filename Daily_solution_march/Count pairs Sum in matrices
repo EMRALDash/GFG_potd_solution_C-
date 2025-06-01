@@ -1,0 +1,28 @@
+class Solution {
+  public:
+    int countPairs(vector<vector<int>> &mat1, vector<vector<int>> &mat2, int x) {
+        unordered_set<int> st;
+        int n = mat1.size();
+        int count = 0;
+
+        // Insert all elements of mat2 into the set
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                st.insert(mat2[i][j]);
+            }
+        }
+
+        // For each element in mat1, check if (x - mat1[i][j]) exists in mat2
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int a = mat1[i][j];
+                int b = x - a;
+                if (st.count(b)) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+};
