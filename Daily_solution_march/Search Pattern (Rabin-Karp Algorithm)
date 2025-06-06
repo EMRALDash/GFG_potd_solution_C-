@@ -1,0 +1,45 @@
+class Solution {
+  public:
+    vector<int> search(string &pat, string &txt) {
+        int d = 26; // number of characters in alphabet
+        int q = 1e9 + 7; // a large prime to reduce hash collisions
+        int m = pat.size();
+        int n = txt.size();
+        vector<int> result;
+
+        if (m > n) return result;
+
+        long long pHash = 0; // hash value for pattern
+        long long tHash = 0; // hash value for text
+        long long h = 1;
+
+        // The value of h would be "pow(d, m-1)%q"
+        for (int i = 0; i < m - 1; i++)
+            h = (h * d) % q;
+
+        // Calculate initial hash value of pattern and first window of text
+        for (int i = 0; i < m; i++) {
+            pHash = (d * pHash + (pat[i] - 'a')) % q;
+            tHash = (d * tHash + (txt[i] - 'a')) % q;
+        }
+
+        // Slide the pattern over text
+        for (int i = 0; i <= n - m; i++) {
+            // Check hash values
+            if (pHash == tHash) {
+                // Double-check to avoid collision
+                if (txt.substr(i, m) == pat)
+                    result.push_back(i + 1); // 1-based indexing
+            }
+
+            // Calculate hash for next window
+            if (i < n - m) {
+                tHash = (d * (tHash - (txt[i] - 'a') * h) + (txt[i + m] - 'a')) % q;
+                if (tHash < 0)
+                    tHash += q;
+            }
+        }
+
+        return result;
+    }
+};
