@@ -1,0 +1,34 @@
+class Solution {
+  public:
+    int minimumCoins(vector<int>& arr, int k) {
+        int n = arr.size();
+        sort(arr.begin(), arr.end());
+
+        vector<long long> prefix(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + arr[i];
+        }
+
+        long long result = LLONG_MAX;
+
+        for (int i = 0; i < n; i++) {
+            int base = arr[i];
+            int upper = base + k;
+
+            // Find first element greater than upper
+            int j = upper_bound(arr.begin(), arr.end(), upper) - arr.begin();
+
+            long long removeLow = prefix[i]; // Remove all coins from piles before i
+            long long removeHigh = 0;
+
+            // Reduce all piles from j to n-1 to (base + k)
+            if (j < n) {
+                removeHigh = (prefix[n] - prefix[j]) - (long long)(n - j) * (base + k);
+            }
+
+            result = min(result, removeLow + removeHigh);
+        }
+
+        return (int)result;
+    }
+};
