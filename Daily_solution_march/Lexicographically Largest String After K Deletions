@@ -1,0 +1,16 @@
+class Solution {
+  public:
+    string maxSubseq(string& s, int k) {
+        int keep = s.size() - k;
+        string res;
+        for (int i = 0; i < s.size(); ++i) {
+            while (!res.empty() && res.back() < s[i] && res.size() + (s.size() - i - 1) >= keep) {
+                res.pop_back();
+            }
+            if (res.size() < keep) {
+                res.push_back(s[i]);
+            }
+        }
+        return res;
+    }
+};
