@@ -1,0 +1,12 @@
+class Solution {
+  public:
+    vector<int> countLessEq(vector<int>& a, vector<int>& b) {
+        sort(b.begin(), b.end());
+        vector<int> res;
+        for (int x : a) {
+            int count = upper_bound(b.begin(), b.end(), x) - b.begin();
+            res.push_back(count);
+        }
+        return res;
+    }
+};
