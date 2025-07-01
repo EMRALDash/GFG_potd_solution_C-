@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    int substrCount(string &s, int k) {
+        if (k > s.size()) return 0;
+
+        unordered_map<char, int> freq;
+        int count = 0;
+
+        for (int i = 0; i < s.size(); ++i) {
+            freq[s[i]]++;
+
+            if (i >= k) {
+                if (--freq[s[i - k]] == 0)
+                    freq.erase(s[i - k]);
+            }
+
+            if (i >= k - 1 && freq.size() == k - 1) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+};
