@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    bool isPowerOf5(string s) {
+        if (s[0] == '0') return false; // No leading zero
+        long long num = 0;
+        for (char c : s) {
+            num = num * 2 + (c - '0');
+        }
+        if (num == 0) return false;
+        while (num % 5 == 0) {
+            num /= 5;
+        }
+        return num == 1;
+    }
+
+    int cuts(string s) {
+        int n = s.size();
+        vector<int> dp(n + 1, 1e9); // dp[i] = min cuts for s[0..i-1]
+        dp[0] = 0;
+
+        for (int i = 1; i <= n; ++i) {
+            for (int j = i - 1; j >= 0; --j) {
+                string sub = s.substr(j, i - j);
+                if (isPowerOf5(sub)) {
+                    dp[i] = min(dp[i], dp[j] + 1);
+                }
+            }
+        }
+
+        return (dp[n] == 1e9) ? -1 : dp[n];
+    }
+};
