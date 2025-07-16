@@ -1,0 +1,49 @@
+class Solution {
+  public:
+    int countNumbers(int n) {
+        int count = 0;
+
+        // Step 1: Generate all primes up to sqrt(n)
+        int limit = sqrt(n) + 1;
+        vector<bool> isPrime(limit + 1, true);
+        isPrime[0] = isPrime[1] = false;
+
+        for (int i = 2; i * i <= limit; ++i) {
+            if (isPrime[i]) {
+                for (int j = i * i; j <= limit; j += i)
+                    isPrime[j] = false;
+            }
+        }
+
+        vector<int> primes;
+        for (int i = 2; i <= limit; ++i) {
+            if (isPrime[i])
+                primes.push_back(i);
+        }
+
+        // Case 1: Count numbers of form p^8 ≤ n
+        for (int p : primes) {
+            long long val = 1;
+            for (int i = 0; i < 8; ++i)
+                val *= p;
+            if (val <= n)
+                count++;
+            else
+                break;
+        }
+
+        // Case 2: Count numbers of form p^2 * q^2 ≤ n where p ≠ q
+        int sz = primes.size();
+        for (int i = 0; i < sz; ++i) {
+            for (int j = i + 1; j < sz; ++j) {
+                long long val = 1LL * primes[i] * primes[i] * primes[j] * primes[j];
+                if (val <= n)
+                    count++;
+                else
+                    break; // q is increasing, so val will only grow
+            }
+        }
+
+        return count;
+    }
+};
