@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int maxKPower(int n, int k) {
+        // Step 1: Prime factorization of k
+        map<int, int> primeFactors;
+        for (int i = 2; i * i <= k; ++i) {
+            while (k % i == 0) {
+                primeFactors[i]++;
+                k /= i;
+            }
+        }
+        if (k > 1) primeFactors[k]++;  // k itself is prime
+
+        int result = INT_MAX;
+
+        // Step 2: For each prime factor, count how many times it divides n!
+        for (map<int, int>::iterator it = primeFactors.begin(); it != primeFactors.end(); ++it) {
+            int p = it->first;
+            int e = it->second;
+
+            int count = 0;
+            int temp = n;
+            while (temp) {
+                temp /= p;
+                count += temp;
+            }
+
+            result = min(result, count / e);
+        }
+
+        return result;
+    }
+};
