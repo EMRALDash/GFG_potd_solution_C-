@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    int countValid(int n, vector<int>& arr) {
+        vector<bool> isRequired(10, false);
+        for (int d : arr) isRequired[d] = true;
+
+        vector<int> bad_digits;
+        for (int i = 0; i <= 9; ++i) {
+            if (!isRequired[i]) bad_digits.push_back(i);
+        }
+
+        // Total n-digit numbers = 9 * 10^(n - 1)
+        int total = 9 * pow(10, n - 1);
+
+        // Edge case: All digits are required
+        if (bad_digits.empty()) return total;
+
+        // Count valid numbers without using any digit from arr
+        int B = bad_digits.size();
+        int B0 = 0;
+        for (int d : bad_digits) {
+            if (d != 0) B0++;
+        }
+
+        // If B0 == 0, can't form n-digit numbers
+        if (B0 == 0) return total;
+
+        int64_t count_without_required = B0;
+        for (int i = 1; i < n; ++i) {
+            count_without_required *= B;
+        }
+
+        return total - count_without_required;
+    }
+};
