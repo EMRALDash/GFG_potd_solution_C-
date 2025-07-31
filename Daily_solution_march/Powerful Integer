@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int powerfulInteger(vector<vector<int>>& intervals, int k) {
+        int maxVal = 0;
+        
+        // First, find the maximum 'end' value from all intervals
+        for (auto &interval : intervals) {
+            maxVal = max(maxVal, interval[1]);
+        }
+
+        // Use frequency array up to maxVal + 2 (safe range)
+        vector<int> freq(maxVal + 2, 0);
+
+        // Mark the start and end of each interval
+        for (auto &interval : intervals) {
+            int l = interval[0], r = interval[1];
+            freq[l]++;
+            freq[r + 1]--;
+        }
+
+        // Prefix sum to get coverage count at each point
+        for (int i = 1; i <= maxVal + 1; i++) {
+            freq[i] += freq[i - 1];
+        }
+
+        // Find the largest index where count >= k
+        int ans = -1;
+        for (int i = 0; i <= maxVal + 1; i++) {
+            if (freq[i] >= k) {
+                ans = i;
+            }
+        }
+
+        return ans;
+    }
+};
