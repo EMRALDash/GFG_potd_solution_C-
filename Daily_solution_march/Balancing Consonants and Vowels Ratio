@@ -1,0 +1,41 @@
+class Solution {
+  public:
+    // Helper to check if a character is vowel
+    bool isVowel(char ch) {
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+
+    int countBalanced(vector<string>& arr) {
+        vector<pair<int, int>> counts;  // stores (vowel_count, consonant_count) for each string
+        for (string& word : arr) {
+            int v = 0, c = 0;
+            for (char ch : word) {
+                if (isVowel(ch)) v++;
+                else c++;
+            }
+            counts.push_back({v, c});
+        }
+
+        unordered_map<int, int> balanceMap;
+        int count = 0;
+        int vowelSum = 0, consSum = 0;
+
+        // Start with difference 0 (vowel-cons) seen once
+        balanceMap[0] = 1;
+
+        for (int i = 0; i < counts.size(); ++i) {
+            vowelSum += counts[i].first;
+            consSum += counts[i].second;
+
+            int diff = vowelSum - consSum;
+
+            if (balanceMap.find(diff) != balanceMap.end()) {
+                count += balanceMap[diff];
+            }
+
+            balanceMap[diff]++;
+        }
+
+        return count;
+    }
+};
