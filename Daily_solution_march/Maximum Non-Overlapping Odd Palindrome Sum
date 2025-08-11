@@ -1,0 +1,54 @@
+class Solution {
+  public:
+    int maxSum(string &s) {
+        int n = s.size();
+        if (n < 2) return 0;
+
+        // Manacher for odd-length palindromes: d1[i] = radius count (pal length = 2*d1[i]-1)
+        vector<int> d1(n);
+        int l = 0, r = -1;
+        for (int i = 0; i < n; ++i) {
+            int k = (i > r) ? 1 : min(d1[l + r - i], r - i + 1);
+            while (i - k >= 0 && i + k < n && s[i - k] == s[i + k]) ++k;
+            d1[i] = k;
+            if (i + k - 1 > r) {
+                l = i - k + 1;
+                r = i + k - 1;
+            }
+        }
+
+        // bestEnd[i] = best odd palindrome length that ends exactly at i
+        // bestStart[i] = best odd palindrome length that starts exactly at i
+        vector<int> bestEnd(n, 0), bestStart(n, 0);
+
+        for (int i = 0; i < n; ++i) {
+            int radius = d1[i];
+            int len = 2 * radius - 1;
+            int start = i - (radius - 1);
+            int end = i + (radius - 1);
+            // Update best for this exact start/end
+            if (start >= 0 && end < n) {
+                bestStart[start] = max(bestStart[start], len);
+                bestEnd[end] = max(bestEnd[end], len);
+            }
+        }
+
+        // Build prefix maximum of bestEnd: prefMax[i] = max palindrome length ending at or before i
+        vector<int> prefMax(n, 0);
+        prefMax[0] = bestEnd[0];
+        for (int i = 1; i < n; ++i) prefMax[i] = max(prefMax[i-1], bestEnd[i]);
+
+        // Build suffix maximum of bestStart: suffMax[i] = max palindrome length starting at or after i
+        vector<int> suffMax(n, 0);
+        suffMax[n-1] = bestStart[n-1];
+        for (int i = n-2; i >= 0; --i) suffMax[i] = max(suffMax[i+1], bestStart[i]);
+
+        // Combine: split between t and t+1
+        int ans = 0;
+        for (int t = 0; t + 1 < n; ++t) {
+            ans = max(ans, prefMax[t] + suffMax[t+1]);
+        }
+
+        return ans;
+    }
+};
