@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string smallestWindow(string &s, string &p) {
+        if (p.size() > s.size()) return "";
+
+        unordered_map<char, int> freqP, freqS;
+        for (char c : p) freqP[c]++;
+
+        int required = freqP.size(); // unique chars to match
+        int formed = 0;              // unique chars matched so far
+
+        int l = 0, r = 0; 
+        int minLen = INT_MAX, start = -1;
+
+        while (r < s.size()) {
+            char c = s[r];
+            freqS[c]++;
+
+            // if current char matches required frequency
+            if (freqP.find(c) != freqP.end() && freqS[c] == freqP[c]) {
+                formed++;
+            }
+
+            // Try to shrink from left if window is valid
+            while (l <= r && formed == required) {
+                if (r - l + 1 < minLen) {
+                    minLen = r - l + 1;
+                    start = l;
+                }
+
+                // remove char at l
+                char leftChar = s[l];
+                freqS[leftChar]--;
+                if (freqP.find(leftChar) != freqP.end() && freqS[leftChar] < freqP[leftChar]) {
+                    formed--;
+                }
+                l++;
+            }
+            r++;
+        }
+
+        return (start == -1) ? "" : s.substr(start, minLen);
+    }
+};
