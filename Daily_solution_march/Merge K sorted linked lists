@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    struct compare {
+        bool operator()(Node* a, Node* b) {
+            return a->data > b->data;  // min-heap
+        }
+    };
+
+    Node* mergeKLists(vector<Node*>& arr) {
+        priority_queue<Node*, vector<Node*>, compare> pq;
+
+        // Push the head of each list into heap
+        for (auto node : arr) {
+            if (node) pq.push(node);
+        }
+
+        // Dummy head for result
+        Node* dummy = new Node(-1);
+        Node* tail = dummy;
+
+        // Process heap
+        while (!pq.empty()) {
+            Node* temp = pq.top();
+            pq.pop();
+
+            tail->next = temp;
+            tail = tail->next;
+
+            if (temp->next) pq.push(temp->next);
+        }
+
+        Node* head = dummy->next;
+        delete dummy;
+        return head;
+    }
+};
