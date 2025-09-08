@@ -1,0 +1,55 @@
+class Solution {
+  public:
+    // Helper: merge two sorted lists
+    Node* merge(Node* l1, Node* l2) {
+        Node dummy(-1);
+        Node* tail = &dummy;
+
+        while (l1 && l2) {
+            if (l1->data <= l2->data) {
+                tail->next = l1;
+                l1 = l1->next;
+            } else {
+                tail->next = l2;
+                l2 = l2->next;
+            }
+            tail = tail->next;
+        }
+
+        if (l1) tail->next = l1;
+        if (l2) tail->next = l2;
+
+        return dummy.next;
+    }
+
+    // Helper: find middle node
+    Node* getMiddle(Node* head) {
+        if (!head || !head->next) return head;
+
+        Node* slow = head;
+        Node* fast = head->next;
+
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow; // middle node
+    }
+
+    Node* mergeSort(Node* head) {
+        // Base case
+        if (!head || !head->next) return head;
+
+        // Find middle
+        Node* mid = getMiddle(head);
+        Node* right = mid->next;
+        mid->next = nullptr;  // split into 2 halves
+
+        // Recursively sort each half
+        Node* leftSorted = mergeSort(head);
+        Node* rightSorted = mergeSort(right);
+
+        // Merge sorted halves
+        return merge(leftSorted, rightSorted);
+    }
+};
