@@ -1,0 +1,30 @@
+Largest number in one swap
+class Solution {
+  public:
+    string largestSwap(string &s) {
+        int n = s.size();
+        vector<int> lastIndex(10, -1);  // To store last positions of digits 0-9
+
+        // Fill last index for each digit
+        for (int i = 0; i < n; ++i) {
+            lastIndex[s[i] - '0'] = i;
+        }
+
+        // Traverse the string
+        for (int i = 0; i < n; ++i) {
+            int currDigit = s[i] - '0';
+
+            // Look for a bigger digit from 9 down to currDigit + 1
+            for (int d = 9; d > currDigit; --d) {
+                if (lastIndex[d] > i) {
+                    // Found a bigger digit at a later position, swap
+                    swap(s[i], s[lastIndex[d]]);
+                    return s;
+                }
+            }
+        }
+
+        // If no swap was made, return original string
+        return s;
+    }
+};
