@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    int minCost(int n, int m, vector<int>& x, vector<int>& y) {
+        // Sort both cost arrays in descending order
+        sort(x.rbegin(), x.rend());
+        sort(y.rbegin(), y.rend());
+        
+        int i = 0, j = 0;
+        int hz_segments = 1, vt_segments = 1;
+        int cost = 0;
+        
+        while (i < x.size() && j < y.size()) {
+            if (x[i] > y[j]) {
+                cost += x[i] * hz_segments;
+                vt_segments++;
+                i++;
+            } else {
+                cost += y[j] * vt_segments;
+                hz_segments++;
+                j++;
+            }
+        }
+        
+        // Remaining vertical cuts
+        while (i < x.size()) {
+            cost += x[i] * hz_segments;
+            i++;
+        }
+        
+        // Remaining horizontal cuts
+        while (j < y.size()) {
+            cost += y[j] * vt_segments;
+            j++;
+        }
+        
+        return cost;
+    }
+};
