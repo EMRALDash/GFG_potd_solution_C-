@@ -1,0 +1,38 @@
+class Solution {
+public:
+    bool stringStack(string &pat, string &tar) {
+        int n = pat.size(), m = tar.size();
+        unordered_map<string, bool> memo;
+        return dfs(pat, tar, 0, 0, "", memo);
+    }
+
+    bool dfs(const string &pat, const string &tar, int i, int j, string s, unordered_map<string, bool> &memo) {
+        if (i == pat.size()) {
+            return s == tar;
+        }
+
+        string key = to_string(i) + "#" + to_string(j) + "#" + s;
+        if (memo.count(key)) return memo[key];
+
+        bool res = false;
+
+        // Operation 1: Append pat[i]
+        string new_s = s + pat[i];
+        int new_j = j;
+        if (j < tar.size() && pat[i] == tar[j]) {
+            new_j++; // matched a character in tar
+        }
+        res |= dfs(pat, tar, i + 1, new_j, new_s, memo);
+
+        // Operation 2: Delete last character (if any)
+        if (!s.empty()) {
+            string deleted_s = s.substr(0, s.size() - 1);
+            res |= dfs(pat, tar, i + 1, j, deleted_s, memo);
+        } else {
+            // If s is empty, deletion does nothing
+            res |= dfs(pat, tar, i + 1, j, s, memo);
+        }
+
+        return memo[key] = res;
+    }
+};
