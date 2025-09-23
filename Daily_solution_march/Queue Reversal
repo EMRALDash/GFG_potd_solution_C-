@@ -1,0 +1,22 @@
+#include <queue>
+#include <stack>
+using namespace std;
+
+class Solution {
+  public:
+    void reverseQueue(queue<int> &q) {
+        stack<int> s;
+
+        // Step 1: Dequeue elements from the queue and push into the stack
+        while (!q.empty()) {
+            s.push(q.front());
+            q.pop();
+        }
+
+        // Step 2: Pop elements from the stack and enqueue back to the queue
+        while (!s.empty()) {
+            q.push(s.top());
+            s.pop();
+        }
+    }
+};
