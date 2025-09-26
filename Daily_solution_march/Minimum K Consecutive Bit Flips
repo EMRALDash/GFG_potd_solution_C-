@@ -1,0 +1,21 @@
+class Solution {
+  public:
+    int kBitFlips(vector<int>& arr, int k) {
+        int n = arr.size();
+        vector<int> diff(n + 1, 0);  // difference array
+        int flip = 0;  // current flip parity
+        int res = 0;   // number of flips
+
+        for (int i = 0; i < n; ++i) {
+            flip ^= diff[i];  // apply any ending flips
+
+            if ((arr[i] ^ flip) == 0) {  // if current bit is 0
+                if (i + k > n) return -1;  // cannot flip
+                res++;
+                flip ^= 1;                // flip current window
+                diff[i + k] ^= 1;         // end flip effect after k positions
+            }
+        }
+        return res;
+    }
+};
