@@ -1,0 +1,37 @@
+class Solution {
+  public:
+    vector<int> longestSubarray(vector<int>& arr, int x) {
+        int n = arr.size();
+        int start = 0, maxLen = 0, bestStart = 0;
+
+        deque<int> maxDeque, minDeque;
+
+        for (int end = 0; end < n; ++end) {
+            // Maintain maxDeque
+            while (!maxDeque.empty() && arr[end] > arr[maxDeque.back()])
+                maxDeque.pop_back();
+            maxDeque.push_back(end);
+
+            // Maintain minDeque
+            while (!minDeque.empty() && arr[end] < arr[minDeque.back()])
+                minDeque.pop_back();
+            minDeque.push_back(end);
+
+            // If the current window is invalid, shrink from start
+            while (arr[maxDeque.front()] - arr[minDeque.front()] > x) {
+                if (maxDeque.front() == start) maxDeque.pop_front();
+                if (minDeque.front() == start) minDeque.pop_front();
+                ++start;
+            }
+
+            // Update best result
+            if (end - start + 1 > maxLen) {
+                maxLen = end - start + 1;
+                bestStart = start;
+            }
+        }
+
+        // Build the resulting subarray
+        return vector<int>(arr.begin() + bestStart, arr.begin() + bestStart + maxLen);
+    }
+};
