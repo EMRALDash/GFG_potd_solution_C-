@@ -1,0 +1,25 @@
+class Solution {
+  public:
+    vector<vector<int>> combinationSum(int n, int k) {
+        vector<vector<int>> result;
+        vector<int> current;
+        backtrack(1, n, k, current, result);
+        return result;
+    }
+    
+    void backtrack(int start, int remainingSum, int k, vector<int>& current, vector<vector<int>>& result) {
+        // Base case: found valid combination
+        if (current.size() == k && remainingSum == 0) {
+            result.push_back(current);
+            return;
+        }
+        // Base case: invalid combination
+        if (current.size() > k || remainingSum < 0) return;
+        
+        for (int i = start; i <= 9; ++i) {
+            current.push_back(i);
+            backtrack(i + 1, remainingSum - i, k, current, result);
+            current.pop_back(); // backtrack
+        }
+    }
+};
