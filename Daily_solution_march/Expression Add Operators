@@ -1,0 +1,43 @@
+class Solution {
+  public:
+    vector<string> findExpr(string &s, int target) {
+        vector<string> result;
+        string path;
+        dfs(s, target, 0, 0, 0, path, result);
+        sort(result.begin(), result.end()); // ensure lexicographical order
+        return result;
+    }
+
+  private:
+    void dfs(string &s, int target, int pos, long currValue, long lastOperand,
+             string path, vector<string>& result) {
+        
+        if (pos == s.size()) {
+            if (currValue == target) {
+                result.push_back(path);
+            }
+            return;
+        }
+
+        for (int i = pos; i < s.size(); ++i) {
+            // Skip numbers with leading zeros
+            if (i != pos && s[pos] == '0') break;
+
+            string numStr = s.substr(pos, i - pos + 1);
+            long num = stol(numStr);
+
+            if (pos == 0) {
+                // First number, no operator
+                dfs(s, target, i + 1, num, num, numStr, result);
+            } else {
+                // Addition
+                dfs(s, target, i + 1, currValue + num, num, path + "+" + numStr, result);
+                // Subtraction
+                dfs(s, target, i + 1, currValue - num, -num, path + "-" + numStr, result);
+                // Multiplication
+                dfs(s, target, i + 1, currValue - lastOperand + lastOperand * num,
+                    lastOperand * num, path + "*" + numStr, result);
+            }
+        }
+    }
+};
