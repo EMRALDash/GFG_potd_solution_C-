@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    vector<vector<int>> knightTour(int n) {
+        vector<vector<int>> board(n, vector<int>(n, -1));
+        
+        // All 8 possible moves for a knight
+        vector<int> dx = {2, 1, -1, -2, -2, -1, 1, 2};
+        vector<int> dy = {1, 2, 2, 1, -1, -2, -2, -1};
+
+        // Helper function for backtracking
+        function<bool(int, int, int)> solve = [&](int x, int y, int moveCount) {
+            if (moveCount == n * n) return true;
+
+            for (int i = 0; i < 8; i++) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (nx >= 0 && ny >= 0 && nx < n && ny < n && board[nx][ny] == -1) {
+                    board[nx][ny] = moveCount;
+                    if (solve(nx, ny, moveCount + 1)) return true;
+                    board[nx][ny] = -1; // backtrack
+                }
+            }
+            return false;
+        };
+
+        board[0][0] = 0; // start from (0, 0)
+        if (!solve(0, 0, 1)) return {}; // No solution
+
+        return board; // Return successful tour
+    }
+};
