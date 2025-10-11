@@ -1,0 +1,23 @@
+class Solution {
+  public:
+    int maxSum = INT_MIN; // Global variable to store the result
+    
+    int maxPathDown(Node* node) {
+        if (!node) return 0;
+
+        // Compute max path sum from left and right, ignoring negatives
+        int left = max(0, maxPathDown(node->left));
+        int right = max(0, maxPathDown(node->right));
+
+        // Update global maximum if needed
+        maxSum = max(maxSum, node->data + left + right);
+
+        // Return max contribution for parent
+        return node->data + max(left, right);
+    }
+
+    int findMaxSum(Node* root) {
+        maxPathDown(root);
+        return maxSum;
+    }
+};
